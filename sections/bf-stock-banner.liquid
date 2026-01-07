@@ -1,0 +1,429 @@
+{% comment %}
+  Section: BF Stock Banner
+  Shows an UPDATE line with current UTC date/time
+  and a dynamic "X blankets left" line that decreases by 2 every hour
+  from 12 to 0, then restarts at 12 (per visitor).
+{% endcomment %}
+
+<section class="bf-stock-banner bf-stock-banner--{{ section.id }}">
+  <div class="bf-stock-banner__inner">
+    <p class="bf-stock-banner__update">
+      <span class="bf-stock-banner__update-label">
+        {{ section.settings.update_label }}
+      </span>
+      <span class="bf-stock-banner__datetime" id="bf-stock-datetime-{{ section.id }}">
+        <!-- Filled by JS with UTC time -->
+      </span>
+    </p>
+
+    <p class="bf-stock-banner__subtext">
+      <em>
+        {{ section.settings.stock_prefix }}
+        <span class="bf-stock-banner__stock-number" id="bf-stock-number-{{ section.id }}">
+          {{ section.settings.start_stock }}
+        </span>
+        {{ section.settings.stock_suffix }}
+      </em>
+    </p>
+  </div>
+</section>
+
+<style>
+  .bf-stock-banner--{{ section.id }} {
+    width: 100%;
+    background-color: {{ section.settings.bg_color }};
+    display: flex;
+    justify-content: center;
+    padding: {{ section.settings.padding_y }}px {{ section.settings.padding_x }}px;
+  }
+
+  .bf-stock-banner--{{ section.id }} .bf-stock-banner__inner {
+    max-width: {{ section.settings.max_width }}px;
+    width: 100%;
+    text-align: {{ section.settings.text_align }};
+    color: {{ section.settings.text_color }};
+    box-sizing: border-box;
+  }
+
+  .bf-stock-banner--{{ section.id }} .bf-stock-banner__update {
+    margin: 0;
+    font-size: {{ section.settings.update_font_size }}px;
+    font-weight: {{ section.settings.update_weight }};
+    letter-spacing: {{ section.settings.update_letter_spacing | divided_by: 100.0 }}em;
+    text-transform: uppercase;
+  }
+
+  .bf-stock-banner--{{ section.id }} .bf-stock-banner__update-label {
+    font-weight: {{ section.settings.update_label_weight }};
+  }
+
+  .bf-stock-banner--{{ section.id }} .bf-stock-banner__subtext {
+    margin: {{ section.settings.subtext_margin_top }}px 0 0 0;
+    font-size: {{ section.settings.subtext_font_size }}px;
+    color: {{ section.settings.subtext_color }};
+  }
+
+  .bf-stock-banner--{{ section.id }} .bf-stock-banner__stock-number {
+    font-weight: {{ section.settings.stock_number_weight }};
+  }
+
+  @media (max-width: 768px) {
+    .bf-stock-banner--{{ section.id }} {
+      padding: {{ section.settings.padding_y_mobile }}px {{ section.settings.padding_x_mobile }}px;
+    }
+
+    .bf-stock-banner--{{ section.id }} .bf-stock-banner__update {
+      font-size: {{ section.settings.update_font_size_mobile }}px;
+    }
+
+    .bf-stock-banner--{{ section.id }} .bf-stock-banner__subtext {
+      font-size: {{ section.settings.subtext_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var sectionId = '{{ section.id }}';
+    var datetimeEl = document.getElementById('bf-stock-datetime-' + sectionId);
+    var stockEl = document.getElementById('bf-stock-number-' + sectionId);
+    if (!datetimeEl || !stockEl) return;
+
+    /* ----------------------------------------
+       LOCAL DATE/TIME + TIMEZONE DISPLAY
+    ----------------------------------------- */
+    function formatLocalDateTime() {
+      var now = new Date(); // local device time
+
+      var months = [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+      ];
+
+      var monthName = months[now.getMonth()];
+      var day = now.getDate();
+
+      function ordinal(n) {
+        if (n > 3 && n < 21) return n + 'th';
+        switch (n % 10) {
+          case 1: return n + 'st';
+          case 2: return n + 'nd';
+          case 3: return n + 'rd';
+          default: return n + 'th';
+        }
+      }
+
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      var hours12 = hours % 12;
+      if (hours12 === 0) hours12 = 12;
+
+      function pad(n) { return String(n).padStart(2,'0'); }
+
+      // Local timezone abbreviation (CET, PST, EST, etc.)
+      var tzParts = Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
+        .formatToParts(now)
+        .find(p => p.type === 'timeZoneName');
+      var tz = tzParts ? tzParts.value : '';
+
+      var formatted =
+        monthName + " " +
+        ordinal(day) + ", " +
+        hours12 + ":" + pad(minutes) + " " + ampm + " " + tz;
+
+      datetimeEl.textContent = formatted;
+    }
+
+    formatLocalDateTime();
+    setInterval(formatLocalDateTime, 60000); // update every minute
+
+
+    /* ----------------------------------------
+       ORIGINAL STOCK REDUCTION LOGIC
+       start at start_stock
+       reduce by step
+       every interval_minutes
+       restart at start_stock when reaching 0
+    ----------------------------------------- */
+
+    var START = {{ section.settings.start_stock | plus: 0 }};
+    var STEP = {{ section.settings.step | plus: 0 }};
+    var INTERVAL_MIN = {{ section.settings.interval_minutes | plus: 0 }};
+    if (INTERVAL_MIN < 1) INTERVAL_MIN = 1;
+
+    var INTERVAL_MS = INTERVAL_MIN * 60 * 1000;
+
+    // How many reductions until it hits 0
+    var MAX_REDUCTIONS = Math.floor(START / STEP);
+
+    var STORAGE_KEY = 'bfStockStartTime-' + sectionId;
+
+    function getStartTime() {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      var now = Date.now();
+
+      if (!stored || isNaN(Number(stored))) {
+        localStorage.setItem(STORAGE_KEY, String(now));
+        return now;
+      }
+
+      return Number(stored);
+    }
+
+    var startTime = getStartTime();
+
+    function updateStock() {
+      var now = Date.now();
+      var elapsed = now - startTime;
+
+      var reductions = Math.floor(elapsed / INTERVAL_MS);
+
+      // If we exceeded the full cycle, restart
+      if (reductions > MAX_REDUCTIONS) {
+        startTime = now;
+        localStorage.setItem(STORAGE_KEY, String(startTime));
+        reductions = 0;
+      }
+
+      var value = START - (reductions * STEP);
+      if (value < 0) value = 0;
+
+      stockEl.textContent = value;
+    }
+
+    updateStock();
+    setInterval(updateStock, 30000); // check every 30s so it updates on time
+
+  })();
+</script>
+
+
+{% schema %}
+{
+  "name": "BF Stock Banner",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#3b3b3b"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Main text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext color",
+      "default": "#FFFFFF"
+    },
+
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 7
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_y_mobile",
+      "label": "Vertical padding mobile (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "padding_x_mobile",
+      "label": "Horizontal padding mobile (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max content width (px)",
+      "min": 400,
+      "max": 1400,
+      "step": 20,
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+
+    {
+      "type": "header",
+      "content": "Update line"
+    },
+    {
+      "type": "text",
+      "id": "update_label",
+      "label": "Update label",
+      "default": "UPDATE:"
+    },
+    {
+      "type": "range",
+      "id": "update_font_size",
+      "label": "Update font size (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "update_font_size_mobile",
+      "label": "Update font size mobile (px)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "update_weight",
+      "label": "Update font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "update_label_weight",
+      "label": "Update label weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "update_letter_spacing",
+      "label": "Letter spacing (×0.01em)",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 4
+    },
+
+    {
+      "type": "header",
+      "content": "Subtext line"
+    },
+    {
+      "type": "text",
+      "id": "stock_prefix",
+      "label": "Text before number",
+      "default": "Only"
+    },
+    {
+      "type": "text",
+      "id": "stock_suffix",
+      "label": "Text after number",
+      "default": "blankets left in stock."
+    },
+    {
+      "type": "range",
+      "id": "subtext_font_size",
+      "label": "Subtext font size (px)",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "subtext_font_size_mobile",
+      "label": "Subtext font size mobile (px)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "subtext_margin_top",
+      "label": "Space between lines (px)",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "stock_number_weight",
+      "label": "Stock number weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+
+    {
+      "type": "header",
+      "content": "Stock behaviour"
+    },
+    {
+      "type": "range",
+      "id": "start_stock",
+      "label": "Starting stock",
+      "min": 2,
+      "max": 50,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "step",
+      "label": "Decrease by",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "interval_minutes",
+      "label": "Minutes between decreases",
+      "min": 5,
+      "max": 240,
+      "step": 5,
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "BF Stock Banner"
+    }
+  ]
+}
+{% endschema %}

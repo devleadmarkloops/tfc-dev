@@ -1,0 +1,221 @@
+{
+  "sections": {
+    "cfca4268-6358-426c-98ab-d292aeef11e5": {
+      "type": "slideshow",
+      "blocks": {
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Blanket-Flaxen07.jpg",
+            "image_overlay_opacity": 0,
+            "heading": "The Softest, Coziest Blanket in the World",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Find out why thousands choose us when it comes to Fleece Blankets",
+            "button_label": "Our Collection",
+            "link": "shopify:\/\/collections\/homepage",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        }
+      },
+      "block_order": [
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1"
+      ],
+      "settings": {
+        "visibility": "always-display",
+        "layout": "full_bleed",
+        "slide_height": "medium",
+        "slider_visual": "dots",
+        "desktop_pagination_position": "over",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "show_text_below": true,
+        "mobile_pagination_position": "under",
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
+    "featured_collection_GKTjQd": {
+      "type": "featured-collection",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "The comfiest products on the market",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "color_scheme": "background-1",
+        "collection": "homepage",
+        "products_to_show": 3,
+        "columns_desktop": 3,
+        "stretch_cards": false,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "enable_desktop_slider": false,
+        "cards_color_scheme": "background-1",
+        "image_ratio": "adapt",
+        "show_secondary_image": false,
+        "badges": "regular",
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff"
+      }
+    },
+    "testimonials_6xHFGj": {
+      "type": "testimonials",
+      "blocks": {
+        "column_UfFjkt": {
+          "type": "column",
+          "settings": {
+            "title": "Best blanket ever!",
+            "text": "<p>\"Super soft, lightweight, and keeps me warm without overheating. A game-changer for cozy nights!\"<\/p>",
+            "author": "<em><strong>Jess<\/strong><\/em>"
+          }
+        },
+        "column_NKGdwP": {
+          "type": "column",
+          "settings": {
+            "title": "Unmatched comfort!",
+            "text": "<p>\"Feels luxurious, stays soft after washing, and is the perfect size. Definitely buying more... haha\"<\/p>",
+            "author": "<em><strong>Ekin<\/strong><\/em>"
+          }
+        },
+        "column_9FHQtH": {
+          "type": "column",
+          "settings": {
+            "title": "Perfect all year!",
+            "text": "<p>\"Not too heavy, yet warm and breathable. It's a must-have in every season. So cozy and versatile!\"<\/p>",
+            "author": "<em><strong>Sarah<\/strong><\/em>"
+          }
+        }
+      },
+      "block_order": [
+        "column_UfFjkt",
+        "column_NKGdwP",
+        "column_9FHQtH"
+      ],
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "What our customers are saying",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "text": "",
+        "color_scheme": "background-1",
+        "image_width": "full",
+        "image_ratio": "square",
+        "column_alignment": "center",
+        "show_stars": true,
+        "stars_color": "#ffd700",
+        "show_quotes": true,
+        "quotes_color_scheme": "accent-2",
+        "cards_color_scheme": "bg-overlay",
+        "type": "slide",
+        "autoplay": false,
+        "autoplay_speed": 5,
+        "arrows_color_scheme": "inverse",
+        "transparent_arrows": true,
+        "dots_color_scheme": "inverse",
+        "desktop_full_page": false,
+        "columns_desktop": 3,
+        "slider_desktop": false,
+        "per_move_desktop": 1,
+        "desktop_spacing": 40,
+        "desktop_side_padding": 0,
+        "desktop_padding_calc": true,
+        "desktop_adaptive_height": false,
+        "desktop_dots_position": "under",
+        "desktop_arrows_position": "sides",
+        "slider_mobile": true,
+        "enable_mobile_preview": false,
+        "mobile_adaptive_height": false,
+        "mobile_dots_position": "under",
+        "mobile_arrows_position": "under",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_cards_colors_background": "#f3f3f3",
+        "custom_cards_gradient_background": "",
+        "custom_cards_colors_text": "#2e2a39"
+      }
+    },
+    "newsletter_BfbTVm": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_G8TGPN": {
+          "type": "heading",
+          "settings": {
+            "title": "Subscribe to our emails",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_EgJDff": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.<\/p>"
+          }
+        },
+        "email_form_4pypHw": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_G8TGPN",
+        "paragraph_EgJDff",
+        "email_form_4pypHw"
+      ],
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "button_type": "solid",
+        "button_label": "Sign up",
+        "button_style_secondary": false,
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "cfca4268-6358-426c-98ab-d292aeef11e5",
+    "featured_collection_GKTjQd",
+    "testimonials_6xHFGj",
+    "newsletter_BfbTVm"
+  ]
+}

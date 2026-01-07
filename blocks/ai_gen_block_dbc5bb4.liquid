@@ -1,0 +1,444 @@
+{% doc %}
+  @prompt
+    need a contact form with these fields:
+    
+    I am a: [Consumer] or [Consumer’s Authorized Agent]
+    
+    Consumer’s first name:
+    
+    Consumer’s last name:
+    
+    Consumer’s email address:
+    
+    Consumer’s phone number:
+    
+    Consumer’s address:
+    
+    Consumer’s city:
+    
+    Consumer’s state:
+    
+    Consumer’s country:
+    
+    Any other request details:
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-contact-form-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .ai-contact-form__wrapper-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: 40px;
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-contact-form__heading-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    margin: 0 0 24px;
+    font-size: {{ block.settings.heading_size }}px;
+  }
+
+  .ai-contact-form__field-group-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+
+  .ai-contact-form__label-{{ ai_gen_id }} {
+    display: block;
+    margin-bottom: 8px;
+    color: {{ block.settings.text_color }};
+    font-weight: 500;
+  }
+
+  .ai-contact-form__required-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+  }
+
+  .ai-contact-form__input-{{ ai_gen_id }},
+  .ai-contact-form__select-{{ ai_gen_id }},
+  .ai-contact-form__textarea-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: 16px;
+    background-color: {{ block.settings.input_background_color }};
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-contact-form__input-{{ ai_gen_id }}:focus,
+  .ai-contact-form__select-{{ ai_gen_id }}:focus,
+  .ai-contact-form__textarea-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ block.settings.input_focus_border_color }};
+  }
+
+  .ai-contact-form__textarea-{{ ai_gen_id }} {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .ai-contact-form__row-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-contact-form__row-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 16px 24px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-contact-form__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .ai-contact-form__success-{{ ai_gen_id }} {
+    color: {{ block.settings.success_color }};
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background-color: rgba(0, 128, 96, 0.1);
+    border-radius: {{ block.settings.input_border_radius }}px;
+  }
+
+  .ai-contact-form__error-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+    margin-top: 8px;
+    font-size: 14px;
+  }
+{% endstyle %}
+
+<div class="ai-contact-form-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-contact-form__wrapper-{{ ai_gen_id }}">
+    {%- if block.settings.heading != blank -%}
+      <h2 class="ai-contact-form__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- form 'contact' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="ai-contact-form__success-{{ ai_gen_id }}">
+          {{ block.settings.success_message }}
+        </div>
+      {%- endif -%}
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-type-{{ ai_gen_id }}">
+          I am a: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <select
+          id="contact-type-{{ ai_gen_id }}"
+          name="contact[contact_type]"
+          class="ai-contact-form__select-{{ ai_gen_id }}"
+          required
+        >
+          <option value="">Select an option</option>
+          <option value="Consumer">Consumer</option>
+          <option value="Consumer's Authorized Agent">Consumer's Authorized Agent</option>
+        </select>
+      </div>
+
+      <div class="ai-contact-form__row-{{ ai_gen_id }}">
+        <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+          <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-first-name-{{ ai_gen_id }}">
+            Consumer's first name: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact-first-name-{{ ai_gen_id }}"
+            name="contact[first_name]"
+            class="ai-contact-form__input-{{ ai_gen_id }}"
+            autocomplete="given-name"
+            required
+          >
+        </div>
+
+        <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+          <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-last-name-{{ ai_gen_id }}">
+            Consumer's last name: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact-last-name-{{ ai_gen_id }}"
+            name="contact[last_name]"
+            class="ai-contact-form__input-{{ ai_gen_id }}"
+            autocomplete="family-name"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-email-{{ ai_gen_id }}">
+          Consumer's email address: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="email"
+          id="contact-email-{{ ai_gen_id }}"
+          name="contact[email]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          autocomplete="email"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="contact-email-error-{{ ai_gen_id }}"
+          {% endif %}
+          required
+        >
+        {%- if form.errors.email -%}
+          <div id="contact-email-error-{{ ai_gen_id }}" class="ai-contact-form__error-{{ ai_gen_id }}">
+            {{ form.errors.messages.email }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-phone-{{ ai_gen_id }}">
+          Consumer's phone number: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="tel"
+          id="contact-phone-{{ ai_gen_id }}"
+          name="contact[phone]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          autocomplete="tel"
+          required
+        >
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-address-{{ ai_gen_id }}">
+          Consumer's address: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="text"
+          id="contact-address-{{ ai_gen_id }}"
+          name="contact[address]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          autocomplete="street-address"
+          required
+        >
+      </div>
+
+      <div class="ai-contact-form__row-{{ ai_gen_id }}">
+        <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+          <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-city-{{ ai_gen_id }}">
+            Consumer's city: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact-city-{{ ai_gen_id }}"
+            name="contact[city]"
+            class="ai-contact-form__input-{{ ai_gen_id }}"
+            autocomplete="address-level2"
+            required
+          >
+        </div>
+
+        <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+          <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-state-{{ ai_gen_id }}">
+            Consumer's state: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact-state-{{ ai_gen_id }}"
+            name="contact[state]"
+            class="ai-contact-form__input-{{ ai_gen_id }}"
+            autocomplete="address-level1"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-country-{{ ai_gen_id }}">
+          Consumer's country: <span class="ai-contact-form__required-{{ ai_gen_id }}">*</span>
+        </label>
+        <input
+          type="text"
+          id="contact-country-{{ ai_gen_id }}"
+          name="contact[country]"
+          class="ai-contact-form__input-{{ ai_gen_id }}"
+          autocomplete="country-name"
+          required
+        >
+      </div>
+
+      <div class="ai-contact-form__field-group-{{ ai_gen_id }}">
+        <label class="ai-contact-form__label-{{ ai_gen_id }}" for="contact-message-{{ ai_gen_id }}">
+          Any other request details:
+        </label>
+        <textarea
+          id="contact-message-{{ ai_gen_id }}"
+          name="contact[body]"
+          class="ai-contact-form__textarea-{{ ai_gen_id }}"
+        ></textarea>
+      </div>
+
+      <button type="submit" class="ai-contact-form__button-{{ ai_gen_id }}">
+        {{ block.settings.button_label }}
+      </button>
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Consumer contact form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Consumer Information Request</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Submit request"
+    },
+    {
+      "type": "richtext",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "<p>Thank you for your submission. We will review your request and respond shortly.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "input_focus_border_color",
+      "label": "Input focus border",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "success_color",
+      "label": "Success message",
+      "default": "#008060"
+    },
+    {
+      "type": "color",
+      "id": "error_color",
+      "label": "Error message",
+      "default": "#D82C0D"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Form border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Input border radius",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Consumer contact form"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}
